@@ -3,32 +3,23 @@ import NavbarComponents from "../components/NavbarComponents";
 import axios from "axios";
 import { Button, Image, ScrollShadow } from "@nextui-org/react";
 import { useParams } from 'react-router-dom';
-import { FaStore } from "react-icons/fa";
 import { Toaster, toast } from "sonner";
+import SkeletonCardComponent from "../components/skeletonCardComponent";
 
-function ProdukPage() {
+function CartPage() {
     const brand = process.env.REACT_APP_BRAND_NAME;
     const logo = process.env.REACT_APP_LOGO_URL;
     const [isLogin, setisLogin] = useState(true);
     const [userV, setuserV] = useState("");
     const [username, setusername] = useState("");
     const baseUrl = process.env.REACT_APP_BASE_URL + "/api/";
-    const baseUrlImg = process.env.REACT_APP_BASE_URL + "/storage/imageProduct/";
+    const imageUrl = process.env.REACT_APP_BASE_URL + "/storage/imageProduct/";
+    const [isLoading, setIsLoading] = useState(true);
     const dataUser = localStorage.getItem("user");
     const [data, setdata] = useState([]);
-    const { id } = useParams();
     const userid = localStorage.getItem("user_id");
+    const [productCounts, setProductCounts] = useState({});
 
-    const handlerAddCart = () => {
-        axios.post(`${baseUrl}cart`, {
-            users_id: userid,
-            product_id: id
-        })
-            .then(() => {
-                toast.info("Success Add to cart")
-            })
-            .catch(error => console.error('Error adding item to cart:', error));
-    }
     useEffect(() => {
         if (localStorage.getItem("token_id")) {
             setisLogin(true);
@@ -65,53 +56,67 @@ function ProdukPage() {
     }, [isLogin, dataUser, baseUrl]);
 
     useEffect(() => {
-        axios.get(baseUrl + "products/" + id)
+        axios.get(baseUrl + "cart/" + userid)
             .then((res) => {
+                setIsLoading(false)
+                console.log(res.data)
                 setdata(res.data);
             })
             .catch((err) => {
+                setIsLoading(true)
                 console.log(err);
             });
-    }, [id, baseUrl]);
-    console.log(baseUrlImg + data.thumbnail)
+    }, [userid, baseUrl]);
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        const counts = {};
+        data.forEach(cart => {
+            const productId = cart.product.id;
+            if (productId in counts) {
+                counts[productId]++;
+            } else {
+                counts[productId] = 1;
+            }
+        });
+        setProductCounts(counts);
+    }, [data, isLoading]);
+
     return (
         <ScrollShadow hideScrollBar className="max-w-[100%] overflow-y-hidden flex flex-wrap">
-        <Toaster />
+            <Toaster />
             <div className="w-[100%] flex justify-center fixed z-50">
                 <NavbarComponents title={brand} logoUrl={logo} IsLogin={isLogin} username={username} user={userV} />
             </div>
-            <div className="mt-[4em] flex flex-wrap w-full min-h-[90vh] justify-center pt-2 ml-[-5px] sm:pt-3 sm:px-[10em] ">
-                <div className="w-full min-h-14 bg-gray-200 rounded-lg shadow-lg grid grid-flow-row p-5 gap-3">
-                    <div className="w-full min-h-3 grid grid-cols-3 gap-6">
-                        <div className="col-span-1 grid grid-flow-row gap-2">
-                            <Image src={baseUrlImg + data.thumbnail} width={500} isZoomed className="object-cover" />
-                            <div className="w-full p-3 bg-white rounded-lg shadow-lg flex items-center gap-4">
-                                <FaStore className=" text-[2em]"/>
-                                <span className="text-lg bold">{data.store && data.store.title ? data.store.title : "NULL Marketplace"}</span>
+            <div className="mt-[4em] w-full pt-2 ml-[-5px] sm:pt-3 sm:px-[10em] grid grid-flow-row gap-3 ">
+
+                {Object.entries(productCounts).map(([productId, count]) => {
+                    const cartItem = data.find(cart => cart.product.id === parseInt(productId));
+                    return (
+                        <div key={productId} className="w-full bg-gray-200 min-h-[5em] p-3 grid grid-cols-5 rounded-lg shadow-lg gap-3">
+                            <div className="col-span-4 bg-gray-100 rounded-xl">
+                                <SkeletonCardComponent
+                                    id={cartItem.product.id}
+                                    isLoaded={!isLoading}
+                                    img={cartItem.product.thumbnail ? imageUrl + cartItem.product.thumbnail : ''}
+                                    title={cartItem.product.title}
+                                    price={cartItem.product.price}
+                                    rating={"0"}
+                                    store={cartItem.product.store ? cartItem.product.store.title : ''}
+                                />
                             </div>
-                        </div>
-                        <div className="bg-gray-100 col-span-2 p-3 rounded-lg shadow-xl pl-6 grid grid-rows-4">
-                            <div className="font-bold text-xl grid grid-flow-col items-center">
-                                <span>
-                                    {data.title}
+                            <div className="bg-white col-span-1 rounded-lg shadow-md p-3">
+                                <span className="font-bold ">
+                                    Total produk: {count}
                                 </span>
-                                <div className="flex justify-end text-amber-800">
-                                    Rp.{data.price}
-                                </div>
-                            </div>
-                            <div className="bg-gray-200 rounded-lg shadow-lg p-3 h-full w-full row-span-3">
-                                {data.description}
                             </div>
                         </div>
-                    </div>
-                     <div className="w-full p-3 bg-white rounded-lg shadow-md grid grid-cols-2 items-center">
-                        <div className=""></div>
-                        <Button onClick={handlerAddCart} color="primary">Keranjang</Button>
-                     </div>
-                </div>
+                    );
+                })}
             </div>
         </ScrollShadow>
     );
 }
 
-export default ProdukPage;
+export default CartPage;

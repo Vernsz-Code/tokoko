@@ -74,6 +74,7 @@ function CategoriesComponent() {
                                 item.data.map(product => (
                                     <div key={product.id} className="scale-80 sm:scale-100">
                                         <SkeletonCardComponent
+                                            id={product.id}
                                             isLoaded={isLoaded}
                                             img={imageUrl + product.thumbnail}
                                             title={product.title}

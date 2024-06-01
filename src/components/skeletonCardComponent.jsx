@@ -5,9 +5,11 @@ import { Card, Skeleton, Image, Popover, PopoverTrigger, PopoverContent, Button 
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { Toaster, toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rating = "", store = "", isOwn = false, id = "" , handler, editHandler, selectedid}) {
   const baseUrl = process.env.REACT_APP_BASE_URL + "/api/";
+  const navigate = useNavigate()
   const { t } = useTranslation();
   const deleteData = () => {
     axios.delete(baseUrl + "products/" + id)
@@ -35,9 +37,14 @@ function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rat
     selectedid(id)
     editHandler()
   }
+  console.log(id)
   return (
-    <Card className="w-[200px] space-y-5 p-4 cursor-pointer" radius="lg">
-      <Skeleton isLoaded={isLoaded} className="rounded-lg text-end">
+    <Card className="w-[200px] space-y-5 p-4 cursor-pointer" radius="lg" onClick={()=> {
+      navigate("/produk/" + id)
+    }}>
+      <Skeleton isLoaded={isLoaded} className="rounded-lg text-end" onClick={()=> {
+        navigate("/produk/" + id)
+      }}>
         {isOwn ?
           <Popover
           showArrow

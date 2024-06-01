@@ -10,7 +10,7 @@ function SearchPage() {
     const brand = process.env.REACT_APP_BRAND_NAME;
     const logo = process.env.REACT_APP_LOGO_URL;
     const [isLogin, setisLogin] = useState(true);
-    const [userV, setuserV] = useState("");
+    const [userV, setuserV] = useState(""); 
     const [username, setusername] = useState("");
     const baseUrl = process.env.REACT_APP_BASE_URL + "/api/";
     const dataUser = localStorage.getItem("user")
