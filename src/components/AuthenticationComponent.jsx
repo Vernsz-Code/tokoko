@@ -245,7 +245,7 @@ function AuthenticationComponent({ login }) {
           duration: 3000,
         });
         localStorage.setItem("user", JSON.stringify(response.data));
-        navigate("/authentication//login");
+        navigate("/authentication/login");
       })
       .catch((error) => {
         console.error(error);
