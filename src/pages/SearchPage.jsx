@@ -7,7 +7,6 @@ import SearchComponent from "../components/SearchComponent";
 
 function SearchPage() {
     const { search } = useParams();
-    console.log(search)
     const brand = process.env.REACT_APP_BRAND_NAME;
     const logo = process.env.REACT_APP_LOGO_URL;
     const [isLogin, setisLogin] = useState(true);

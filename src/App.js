@@ -5,6 +5,7 @@ import AuthenticationPage from "./pages/AuthenticationPage";
 import HomePage from "./pages/HomePage";
 import MarketPlacePage from "./pages/MarketPlacePage";
 import SearchPage from "./pages/SearchPage";
+import ProdukPage from "./pages/ProdukPage";
 
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/MarketPlace" element={<MarketPlacePage />} />
           <Route path="/s/:search" element={<SearchPage />} />
+          <Route path="/produk/:id" element={<ProdukPage />} />
           <Route
             path="*"
             element={

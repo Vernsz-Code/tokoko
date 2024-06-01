@@ -322,11 +322,8 @@ function AuthenticationComponent({ login }) {
     console.log(e.preventDefault())
     if (isPhoneNumber) {
       if (e.target.value.length > 5) {
-        const formatedValue = e.target.value.startsWith("0")
-          ? `62${e.target.value.slice(1)}`
-          : e.target.value;
         setOtpSent({
-          phone_number: formatedValue,
+          phone_number: data.phone_number,
           otp_code: e.target.value,
         });
         setIsValid(true);

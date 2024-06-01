@@ -12,7 +12,7 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
     const productsUrl = `${baseUrl}/api/products`;
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(new Set([]));
-    const [statusP, setstatusP] = useState(1)
+    const [statusP, setStatusP] = useState(1);
     const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
@@ -23,6 +23,7 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
         stock: '',
         category_id: ''
     });
+
     useEffect(() => {
         setFormData(prevState => ({
             ...prevState,
@@ -55,7 +56,6 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
                         thumbnail: null // reset thumbnail since we don't fetch the actual file
                     });
                     setStatus(new Set([productData.status ? 'Active' : 'Inactive']));
-                    console.log(formData)
                 } catch (error) {
                     console.error('Error fetching product:', error);
                 }
@@ -67,50 +67,55 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
 
     const onSubmit = async () => {
         setLoading(true);
-        console.log(formData)
         try {
             let response;
             if (isInsert) {
-                response = await axios.post(productsUrl, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                toast.success('Product created successfully!');
-            } else {
-                const { title, description, thumbnail, price, stock, category_id } = formData; 
-                const updatedData = {
+                const { title, description, thumbnail, price, stock, category_id } = formData;
+                const insertData = {
                     title,
                     description,
-                    thumbnail : thumbnail,
+                    thumbnail,
                     store_id: parseInt(storeid),
                     price,
                     stock,
                     status: statusP,
                     category_id
                 };
-                if(thumbnail !== null){
-                    response = await axios.put(productsUrl + "/" +id, updatedData, {
+
+                response = await axios.post(productsUrl, insertData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                toast.success('Product created successfully!');
+            } else {
+                const { title, description, thumbnail, price, stock, category_id } = formData;
+                const updatedData = {
+                    title,
+                    description,
+                    thumbnail,
+                    store_id: parseInt(storeid),
+                    price,
+                    stock,
+                    status: statusP,
+                    category_id
+                };
+
+                if (thumbnail !== null) {
+                    response = await axios.put(productsUrl + "/" + id, updatedData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
-                    })
-                        .then((res) => {
-                            console.log(res);
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                        })
-                    toast.success('Product updated successfully!');
-                }else { 
+                    });
+                } else {
                     response = await axios.put(`${productsUrl}/${id}`, updatedData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
                 }
-                console.log(updatedData)
-                
+
+                toast.success('Product updated successfully!');
             }
             reset();
             setFormData({
@@ -139,15 +144,15 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
     const handleInputChange = (field) => (e) => {
         const value = e.target.type === 'file' ? e.target.files[0] : e.target.value;
         if (field === 'status') {
-            value = e.target.value === 'Active' ? 1 : 0;
-            setstatusP(value)
+            const statusValue = e.target.value === 'Active' ? 1 : 0;
+            setStatusP(statusValue);
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [field]: value
+            }));
         }
-        setFormData(prevState => ({
-            ...prevState,
-            [field]: value
-        }));
     };
-
 
     const handleCategoryChange = (keys) => {
         setFormData(prevState => ({
