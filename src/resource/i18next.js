@@ -47,6 +47,7 @@ const resources = {
         successRM : "Success Register Your Own Marketplace!",
         failRM: "Failed Registery your own Marketplace!",
         noResultFound: "No Data Result Found",
+        btncart: "Cart",
       },
     },
     id: {
@@ -94,6 +95,7 @@ const resources = {
         successRM : "Berhasil mendaftarkan Toko mu!",
         failRM: "Gagal mendaftarkan tokomu",
         noResultFound: "Tidak ada Data yang ditemukan",
+        btncart: "Keranjang",
       },
     },
   };

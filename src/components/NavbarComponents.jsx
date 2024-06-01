@@ -113,6 +113,14 @@ function NavbarComponents({ title, logoUrl, IsLogin, username, user, isreload })
                 {t("btnSetting")}
               </DropdownItem>
               <DropdownItem
+                key="cart"
+                onClick={() => {
+                  navigate("/cart");
+                }}
+              >
+                {t("btncart")}
+              </DropdownItem>
+              <DropdownItem
                 key="help_and_feedback"
                 onClick={() => {
                   window.open(
