@@ -4,6 +4,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import AuthenticationPage from "./pages/AuthenticationPage";
 import HomePage from "./pages/HomePage";
 import MarketPlacePage from "./pages/MarketPlacePage";
+import SearchPage from "./pages/SearchPage";
 
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 
@@ -39,6 +40,7 @@ function App() {
           />
           <Route path="/" element={<HomePage />} />
           <Route path="/MarketPlace" element={<MarketPlacePage />} />
+          <Route path="/s/:search" element={<SearchPage />} />
           <Route
             path="*"
             element={

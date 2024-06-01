@@ -15,6 +15,9 @@ function StoreOwnComponent() {
     const imageUrl = process.env.REACT_APP_BASE_URL + "/storage/imageProduct/";
     const [isLoading, setIsLoading] = useState(true);
     const [isAdd, setisAdd] = useState(false)
+    const [selectedStoreId, setselectedStoreId] = useState();
+    const [isInsert, setisInsert] = useState(true);
+
 
 
     const getStoreId = () => {
@@ -24,6 +27,7 @@ function StoreOwnComponent() {
         }
         axios.get(`${baseUrl}stores/${userid}`)
             .then((res) => {
+                setstoreId(res.data[0].id)
                 axios.get(`${baseUrl}products/searchstore/${res.data[0].id}`)
                     .then((res) => {
                         setData(res.data);
@@ -49,11 +53,17 @@ function StoreOwnComponent() {
     }
 
     const handlerButton = () => {
+        setisInsert(true)
+        setselectedStoreId(null)
         setisAdd(true)
     }
     const handlerbackbutton = () => {
         handler();
         setisAdd(false)
+    }
+    const handlerEditButton = () => {
+        setisAdd(true)
+        setisInsert(false)
     }
 
     return (
@@ -70,7 +80,7 @@ function StoreOwnComponent() {
                         </div>
                         <div className=" w-full mt-3 p-4 flex justify-center">
                             <div className="w-3/5 bg-gray-200 rounded-lg shadow-lg min-h-[50vh] flex justify-center p-3">
-                                <ProductComponent storeid={storeId} />
+                                <ProductComponent storeid={storeId} isInsert={isInsert} id={selectedStoreId}/>
                             </div>
                         </div>
                     </div>
@@ -106,6 +116,8 @@ function StoreOwnComponent() {
                                         store={product.store.title}
                                         isOwn={true}
                                         handler={handler}
+                                        editHandler={handlerEditButton}
+                                        selectedid={setselectedStoreId}
                                     />
                                 </div>
                             ))

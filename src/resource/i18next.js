@@ -46,6 +46,7 @@ const resources = {
         marketODL: "Opsional. This will blank text",
         successRM : "Success Register Your Own Marketplace!",
         failRM: "Failed Registery your own Marketplace!",
+        noResultFound: "No Data Result Found",
       },
     },
     id: {
@@ -92,6 +93,7 @@ const resources = {
         marketODL: "Opsional. Ini akan dikosongkan",
         successRM : "Berhasil mendaftarkan Toko mu!",
         failRM: "Gagal mendaftarkan tokomu",
+        noResultFound: "Tidak ada Data yang ditemukan",
       },
     },
   };

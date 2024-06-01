@@ -5,13 +5,14 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Input, Button, Select, SelectItem } from '@nextui-org/react';
 
-const ProductComponent = ({ storeid }) => {
+const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const baseUrl = process.env.REACT_APP_BASE_URL;
     const categoriesUrl = `${baseUrl}/api/categories`;
     const productsUrl = `${baseUrl}/api/products`;
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(new Set([]));
+    const [statusP, setstatusP] = useState(1)
     const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
@@ -22,7 +23,6 @@ const ProductComponent = ({ storeid }) => {
         stock: '',
         category_id: ''
     });
-
     useEffect(() => {
         setFormData(prevState => ({
             ...prevState,
@@ -43,35 +43,85 @@ const ProductComponent = ({ storeid }) => {
         fetchCategories();
     }, [categoriesUrl]);
 
+    useEffect(() => {
+        if (!isInsert) {
+            const fetchProduct = async () => {
+                try {
+                    const response = await axios.get(`${productsUrl}/${id}`);
+                    const productData = response.data;
+                    setFormData({
+                        ...productData,
+                        category_id: productData.category_id.toString(), // ensure it matches the Select component
+                        thumbnail: null // reset thumbnail since we don't fetch the actual file
+                    });
+                    setStatus(new Set([productData.status ? 'Active' : 'Inactive']));
+                    console.log(formData)
+                } catch (error) {
+                    console.error('Error fetching product:', error);
+                }
+            };
+
+            fetchProduct();
+        }
+    }, [isInsert, id, productsUrl]);
+
     const onSubmit = async () => {
         setLoading(true);
-        const data = {
-            ...formData,
-            status: Array.from(status)[0] === 'Active' ? 1 : 0
-        };
-
-        const payload = new FormData();
-        Object.keys(data).forEach(key => {
-            payload.append(key, typeof data[key] === 'number' ? data[key].toString() : data[key]);
-        });
-
+        console.log(formData)
         try {
-            const response = await axios.post(productsUrl, payload, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+            let response;
+            if (isInsert) {
+                response = await axios.post(productsUrl, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                toast.success('Product created successfully!');
+            } else {
+                const { title, description, thumbnail, price, stock, category_id } = formData; 
+                const updatedData = {
+                    title,
+                    description,
+                    thumbnail : thumbnail,
+                    store_id: parseInt(storeid),
+                    price,
+                    stock,
+                    status: statusP,
+                    category_id
+                };
+                if(thumbnail !== null){
+                    response = await axios.put(productsUrl + "/" +id, updatedData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                        .then((res) => {
+                            console.log(res);
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                    toast.success('Product updated successfully!');
+                }else { 
+                    response = await axios.put(`${productsUrl}/${id}`, updatedData, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
                 }
-            });
-            toast.success('Product created successfully!');
+                console.log(updatedData)
+                
+            }
             reset();
-            setFormData(prevState => ({
-                ...prevState,
+            setFormData({
                 title: '',
                 description: '',
                 thumbnail: null,
+                store_id: parseInt(storeid),
                 price: '',
                 stock: '',
                 category_id: ''
-            }));
+            });
             setStatus(new Set([]));
         } catch (error) {
             if (error.response && error.response.data.errors) {
@@ -79,7 +129,7 @@ const ProductComponent = ({ storeid }) => {
                     toast.error(err.join(' '));
                 });
             } else {
-                toast.error('An error occurred while creating the product.');
+                toast.error(`An error occurred while ${isInsert ? 'creating' : 'updating'} the product.`);
             }
         } finally {
             setLoading(false);
@@ -87,11 +137,17 @@ const ProductComponent = ({ storeid }) => {
     };
 
     const handleInputChange = (field) => (e) => {
+        const value = e.target.type === 'file' ? e.target.files[0] : e.target.value;
+        if (field === 'status') {
+            value = e.target.value === 'Active' ? 1 : 0;
+            setstatusP(value)
+        }
         setFormData(prevState => ({
             ...prevState,
-            [field]: e.target.type === 'file' ? e.target.files[0] : e.target.value
+            [field]: value
         }));
     };
+
 
     const handleCategoryChange = (keys) => {
         setFormData(prevState => ({
@@ -102,7 +158,7 @@ const ProductComponent = ({ storeid }) => {
 
     return (
         <div className="container p-3">
-            <h2>Create Product</h2>
+            <h2>{isInsert ? "Create Product" : "Update Product"}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className='grid grid-flow-row gap-3'>
                 <div>
                     <Input
@@ -132,7 +188,7 @@ const ProductComponent = ({ storeid }) => {
                         variant='underlined'
                         labelPlacement='outside-left'
                         type="file"
-                        {...register('thumbnail', { required: 'Thumbnail is required' })}
+                        {...register('thumbnail', { required: isInsert })}
                         onChange={handleInputChange('thumbnail')}
                     />
                     {errors.thumbnail && <p>{errors.thumbnail.message}</p>}
@@ -170,6 +226,7 @@ const ProductComponent = ({ storeid }) => {
                         placeholder="Select status"
                         selectedKeys={status}
                         onSelectionChange={setStatus}
+                        onChange={handleInputChange('status')}
                     >
                         <SelectItem key="Active">Active</SelectItem>
                         <SelectItem key="Inactive">Inactive</SelectItem>
@@ -182,7 +239,7 @@ const ProductComponent = ({ storeid }) => {
                         label="Category"
                         variant="bordered"
                         placeholder="Select category"
-                        selectedKeys={new Set([formData.category_id.toString()])}
+                        selectedKeys={new Set([formData.category_id])}
                         onSelectionChange={handleCategoryChange}
                     >
                         {categories.map(category => (

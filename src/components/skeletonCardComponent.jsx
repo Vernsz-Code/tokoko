@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { Toaster, toast } from 'sonner';
 
-function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rating = "", store = "", isOwn = false, id = "" , handler}) {
+function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rating = "", store = "", isOwn = false, id = "" , handler, editHandler, selectedid}) {
   const baseUrl = process.env.REACT_APP_BASE_URL + "/api/";
   const { t } = useTranslation();
   const deleteData = () => {
@@ -31,6 +31,10 @@ function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rat
       },
     });
   }
+  const handleredit = () => {
+    selectedid(id)
+    editHandler()
+  }
   return (
     <Card className="w-[200px] space-y-5 p-4 cursor-pointer" radius="lg">
       <Skeleton isLoaded={isLoaded} className="rounded-lg text-end">
@@ -45,7 +49,7 @@ function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rat
             </PopoverTrigger>
             <PopoverContent>
               <div className="min-w-[4em] p-2 grid grid-rows-2 gap-2">
-                <Button size='sm' color='primary' endContent={<FaPencilAlt />}>Edit</Button>
+                <Button size='sm' color='primary' endContent={<FaPencilAlt />} onClick={handleredit}>Edit</Button>
                 <Button size='sm' color='danger' endContent={<FaRegTrashAlt />} onClick={handlerdelete} >Delete</Button>
               </div>
             </PopoverContent>
