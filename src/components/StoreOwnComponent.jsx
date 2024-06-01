@@ -16,22 +16,6 @@ function StoreOwnComponent() {
     const [isLoading, setIsLoading] = useState(true);
     const [isAdd, setisAdd] = useState(false)
 
-    const getData = () => {
-        const userid = localStorage.getItem("user_id");
-        if (!userid) {
-            console.error("User ID not found in localStorage");
-            return;
-        }
-        axios.get(`${baseUrl}products/searchstore/${userid}`)
-            .then((res) => {
-                setData(res.data);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setIsLoading(false);
-            });
-    }
 
     const getStoreId = () => {
         const userid = localStorage.getItem("user_id");
@@ -40,7 +24,15 @@ function StoreOwnComponent() {
         }
         axios.get(`${baseUrl}stores/${userid}`)
             .then((res) => {
-                setstoreId(res.data[0].id)
+                axios.get(`${baseUrl}products/searchstore/${res.data[0].id}`)
+                    .then((res) => {
+                        setData(res.data);
+                        setIsLoading(false);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        setIsLoading(false);
+                    });
             })
             .catch((err) => {
                 console.error(err);
@@ -49,12 +41,11 @@ function StoreOwnComponent() {
 
     useEffect(() => {
         getStoreId()
-        getData();
     }, [baseUrl]);
 
     const handler = () => {
         setIsLoading(true);
-        getData();
+        getStoreId()
     }
 
     const handlerButton = () => {
@@ -79,7 +70,7 @@ function StoreOwnComponent() {
                         </div>
                         <div className=" w-full mt-3 p-4 flex justify-center">
                             <div className="w-3/5 bg-gray-200 rounded-lg shadow-lg min-h-[50vh] flex justify-center p-3">
-                                <ProductComponent storeid={storeId}/>
+                                <ProductComponent storeid={storeId} />
                             </div>
                         </div>
                     </div>
