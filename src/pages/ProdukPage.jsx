@@ -80,11 +80,11 @@ function ProdukPage() {
             <div className="w-[100%] flex justify-center fixed z-50">
                 <NavbarComponents title={brand} logoUrl={logo} IsLogin={isLogin} username={username} user={userV} />
             </div>
-            <div className="mt-[4em] flex flex-wrap w-full min-h-[90vh] justify-center pt-2 ml-[-5px] sm:pt-3 sm:px-[10em] ">
-                <div className="w-full min-h-14 bg-gray-200 rounded-lg shadow-lg grid grid-flow-row p-5 gap-3">
-                    <div className="w-full min-h-3 grid grid-cols-3 gap-6">
-                        <div className="col-span-1 grid grid-flow-row gap-2">
-                            <Image src={baseUrlImg + data.thumbnail} width={500} isZoomed className="object-cover" />
+            <div className="mt-[4em] flex flex-wrap w-full md:w-[400em] min-h-[90vh] justify-center pt-2 ml-[-5px] sm:pt-3 sm:px-[10em] ">
+                <div className="w-full min-h-14 bg-gray-200 pl-5 pt-3 pr-5 rounded-lg shadow-lg grid lg:grid-flow-row sm:p-5 gap-3">
+                    <div className="w-full min-h-3 grid grid-flow-row lg:grid-cols-3 gap-6">
+                        <div className="lg:col-span-1 grid grid-flow-row lg:gap-2 justify-center p-3 rounded-lg lg:w-full w-[105%] bg-white">
+                            <Image src={baseUrlImg + data.thumbnail} isZoomed className="object-cover" />
                             <div className="w-full p-3 bg-white rounded-lg shadow-lg flex items-center gap-4">
                                 <FaStore className=" text-[2em]"/>
                                 <span className="text-lg bold">{data.store && data.store.title ? data.store.title : "NULL Marketplace"}</span>

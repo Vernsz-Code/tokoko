@@ -15,7 +15,6 @@ function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rat
     axios.delete(baseUrl + "products/" + id)
       .then(() => {
         handler()
-        console.log("success")
       })
       .catch((err) => {
         console.log(err)
@@ -37,7 +36,6 @@ function SkeletonCardComponent({ isLoaded, img = "", title = "", price = "", rat
     selectedid(id)
     editHandler()
   }
-  console.log(id)
   return (
     <Card className="w-[200px] space-y-5 p-4 cursor-pointer" radius="lg" onClick={()=> {
       navigate("/produk/" + id)

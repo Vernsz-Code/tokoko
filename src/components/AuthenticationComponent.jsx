@@ -387,7 +387,7 @@ function AuthenticationComponent({ login }) {
         style={{ borderRadius: "56% 44% 84% 16% / 61% 25% 75% 39% " }}
         className="bg-[#16DB65] h-[45em] w-[46em] relative shadow-2xl"
       ></div>
-      <div className="h-[90%] flex w-[35em] overflow-x-hidden bg-[#ffffff] rounded-lg border-2 flex-row shadow-xl absolute items-center">
+      <div className="h-screen xl:h-[90%] w-screen flex xl:w-[35em] overflow-x-hidden bg-[#ffffff] rounded-lg border-2 flex-row shadow-xl absolute items-center">
         <Toaster />
         <div className={getScrolledClass(scrolled)}>
           <div className="top pt-3 xl:pt-20 h-[20%] w-[90%] border-b-2 text-2xl font-bold">

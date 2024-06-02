@@ -79,7 +79,7 @@ function StoreOwnComponent() {
                             </Button>
                         </div>
                         <div className=" w-full mt-3 p-4 flex justify-center">
-                            <div className="w-3/5 bg-gray-200 rounded-lg shadow-lg min-h-[50vh] flex justify-center p-3">
+                            <div className="w-screen     lg:w-3/5 bg-gray-200 rounded-lg shadow-lg min-h-[50vh] flex justify-center p-3">
                                 <ProductComponent storeid={storeId} isInsert={isInsert} id={selectedStoreId}/>
                             </div>
                         </div>

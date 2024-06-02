@@ -47,7 +47,6 @@ function SearchComponent({ search, isReload }) {
               price={product.price}
               rating={"0"}
               store={product.store.title}
-              isOwn={true}
             />
           </div>
         ))}

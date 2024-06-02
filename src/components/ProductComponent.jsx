@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Input, Button, Select, SelectItem } from '@nextui-org/react';
+import { Input, Button, Select, SelectItem, Textarea } from '@nextui-org/react';
 
 const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -162,7 +162,7 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
     };
 
     return (
-        <div className="container p-3">
+        <div className="w-full p-3">
             <h2>{isInsert ? "Create Product" : "Update Product"}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className='grid grid-flow-row gap-3'>
                 <div>
@@ -177,7 +177,7 @@ const ProductComponent = ({ storeid, isInsert = true, id = 0 }) => {
                 </div>
 
                 <div>
-                    <Input
+                    <Textarea
                         label="Description"
                         {...register('description', { required: 'Description is required' })}
                         value={formData.description}

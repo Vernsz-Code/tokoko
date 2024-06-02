@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavbarComponents from "../components/NavbarComponents";
 import axios from "axios";
-import { Button, Image, ScrollShadow } from "@nextui-org/react";
-import { useParams } from 'react-router-dom';
+import { Button, ScrollShadow } from "@nextui-org/react";
 import { Toaster, toast } from "sonner";
 import SkeletonCardComponent from "../components/skeletonCardComponent";
 
@@ -59,7 +58,6 @@ function CartPage() {
         axios.get(baseUrl + "cart/" + userid)
             .then((res) => {
                 setIsLoading(false)
-                console.log(res.data)
                 setdata(res.data);
             })
             .catch((err) => {
@@ -94,8 +92,8 @@ function CartPage() {
                 {Object.entries(productCounts).map(([productId, count]) => {
                     const cartItem = data.find(cart => cart.product.id === parseInt(productId));
                     return (
-                        <div key={productId} className="w-full bg-gray-200 min-h-[5em] p-3 grid grid-cols-5 rounded-lg shadow-lg gap-3">
-                            <div className="col-span-4 bg-gray-100 rounded-xl">
+                        <div key={productId} className="w-full bg-gray-200 sm:gap-8 min-h-[5em] p-3 grid grid-cols-5 rounded-lg shadow-lg gap-3">
+                            <div className=" col-span-3 lg:col-span-4 lg:bg-gray-100 rounded-xl">
                                 <SkeletonCardComponent
                                     id={cartItem.product.id}
                                     isLoaded={!isLoading}
@@ -106,7 +104,7 @@ function CartPage() {
                                     store={cartItem.product.store ? cartItem.product.store.title : ''}
                                 />
                             </div>
-                            <div className="bg-white col-span-1 rounded-lg shadow-md p-3">
+                            <div className="bg-white lg:col-span-1 col-span-2 rounded-lg shadow-md p-3">
                                 <span className="font-bold ">
                                     Total produk: {count}
                                 </span>
